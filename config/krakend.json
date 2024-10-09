@@ -1,0 +1,91 @@
+{
+    "$schema": "https://www.krakend.io/schema/krakend.json",
+    "version": 3,
+    "name": "API Gateway",
+    "plugin": {
+        "pattern": ".so",
+        "folder": "/opt/krakend/plugins/"
+    },
+    "extra_config": {
+        "telemetry/logging": {
+            "level": "ERROR",
+            "syslog": false,
+            "stdout": true
+        },
+        "telemetry/opentelemetry": {
+            "service_name": "krakend_vm_service",
+            "metric_reporting_period": 1,
+            "skip_paths": [
+                "/__health",
+                "/__debug/",
+                "/__echo/",
+                "/__stats/"
+            ],
+            "exporters": {
+                "prometheus": [
+                    {
+                        "disable_metrics": false,
+                        "port": 9091,
+                        "name": "gw_metrics",
+                        "process_metrics": true,
+                        "go_metrics": true
+                    }
+                ]
+            }
+        },
+        "router": {
+            "hide_version_header": true,
+            "auto_options": true,
+            "return_error_msg": true,
+            "disable_access_log": true
+        },
+        "security/cors": {
+            "allow_origins": [
+                "*"
+            ],
+            "allow_methods": [
+                "GET",
+                "HEAD",
+                "POST",
+                "DELETE",
+                "PATCH",
+                "OPTIONS"
+            ],
+            "expose_headers": [
+                "Content-Length",
+                "Content-Type"
+            ],
+            "allow_headers": [
+                "Accept",
+                "Authorization",
+                "Content-Type",
+                "Accept-Version"
+            ],
+            "max_age": "12h",
+            "allow_credentials": false,
+            "debug": true
+        }
+    },
+    "timeout": "3000ms",
+    "cache_ttl": "300s",
+    "port": 80,
+    "debug_endpoint": true,
+    "endpoints": [
+        {
+            "endpoint": "/v1/orders",
+            "method": "POST",
+            "output_encoding": "no-op",
+            "backend": [
+                {
+                    "host": [
+                        "ORDER_SERVICE"
+                    ],
+                    "url_pattern": "/v1/orders",
+                    "method": "POST",
+                    "encoding": "no-op",
+                    "disable_host_sanitize": false
+                }
+            ]
+        }
+    ]
+}

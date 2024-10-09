@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  krakend:
+    build: ./
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2048M
+    ports:
+      - 8380:80 # http port
+      - 8390:3001 # metrics port
+    command:
+      - /bin/sh
+      - -c
+      - |
+        /entrypoint.sh
+        /usr/bin/krakend run -d -c /etc/krakend/krakend.json -p 80
+    environment:
+      - ORDER_SERVICE=http://127.0.0.1:7634
+
