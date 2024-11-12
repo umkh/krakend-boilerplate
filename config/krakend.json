@@ -78,7 +78,7 @@
             "backend": [
                 {
                     "host": [
-                        "ORDER_SERVICE"
+                        "$ORDER_SERVICE"
                     ],
                     "url_pattern": "/v1/orders",
                     "method": "POST",
