@@ -4,7 +4,7 @@ COPY config/krakend.json /etc/krakend/krakend-config.json
 
 COPY plugins /opt/krakend/plugins/
 
-COPY script/entrypoint.sh /
+COPY scripts/entrypoint.sh /
 
 RUN chmod +x /entrypoint.sh && apk add envsubst
 
